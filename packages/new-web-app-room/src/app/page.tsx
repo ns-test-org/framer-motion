@@ -1,84 +1,124 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import BasicAnimations from '../components/BasicAnimations';
+import HoverEffects from '../components/HoverEffects';
+import PageTransitions from '../components/PageTransitions';
+import ScrollAnimations from '../components/ScrollAnimations';
+import DragInteractions from '../components/DragInteractions';
+import LayoutAnimations from '../components/LayoutAnimations';
+import GestureAnimations from '../components/GestureAnimations';
 
-const slogans = [
-  "Turn chats into apps",
-  "Prompt. Ship. Repeat.",
-  "Build anything from a chat",
-  "Ideas → Apps, instantly",
-  "From zero to MVP in minutes",
-  "Your cofounder in the command line",
-  "Draft, iterate, deploy",
-  "Ship faster than you can type",
-  "Design in text, deliver in code",
-  "Dream it. Prompt it. Run it.",
-  "Chat-native app building",
-  "From prompt to product",
-  "One prompt, infinite apps",
-  "Stop scaffolding. Start shipping.",
-  "Prototype at the speed of thought",
-  "Make conversations executable"
+const demos = [
+  { id: 'basic', title: 'Basic Animations', component: BasicAnimations },
+  { id: 'hover', title: 'Hover & Tap Effects', component: HoverEffects },
+  { id: 'transitions', title: 'Page Transitions', component: PageTransitions },
+  { id: 'scroll', title: 'Scroll Animations', component: ScrollAnimations },
+  { id: 'drag', title: 'Drag Interactions', component: DragInteractions },
+  { id: 'layout', title: 'Layout Animations', component: LayoutAnimations },
+  { id: 'gestures', title: 'Gesture Recognition', component: GestureAnimations },
 ];
 
-export default function Landing() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
+export default function FramerMotionDemo() {
+  const [activeDemo, setActiveDemo] = useState('basic');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsVisible(false);
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % slogans.length);
-        setIsVisible(true);
-      }, 400);
-    }, 2800);
-
-    return () => clearInterval(interval);
-  }, []);
+  const ActiveComponent = demos.find(demo => demo.id === activeDemo)?.component || BasicAnimations;
 
   return (
-    <div className="relative h-[100dvh] w-full overflow-hidden bg-black text-white">
-      {/* Enhanced animated aurora background layers */}
-      <div className="absolute inset-0 bg-aurora-layer-1" />
-      <div className="absolute inset-0 bg-aurora-layer-2" />
-      <div className="absolute inset-0 bg-aurora-layer-3" />
-      
-      {/* Floating particles overlay */}
-      <div className="absolute inset-0 bg-particles" />
-      
-      {/* Main content - centered */}
-      <main className="relative z-10 h-full flex flex-col items-center justify-center px-6">
-        <h1 className="text-center text-[clamp(28px,6vw,64px)] font-medium tracking-tight mb-4">
-          Turn Chats into Apps
-        </h1>
-        
-        {/* Rotating slogans */}
-        <div className="mt-4 h-8 md:h-10 overflow-hidden flex items-center justify-center">
-          <span
-            className={`inline-block text-center text-[clamp(18px,3vw,32px)] font-light transition-all duration-[400ms] ease-in-out ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
-            }`}
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+      {/* Header */}
+      <motion.header 
+        className="relative z-50 p-6 border-b border-white/10 backdrop-blur-sm bg-black/20"
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <motion.h1 
+            className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
-            {slogans[currentIndex]}
-          </span>
-        </div>
-      </main>
-      
-      {/* Start Prompting arrow pointing left - bottom left */}
-      <div className="absolute left-6 md:left-8 bottom-[5%] z-20 flex items-center gap-3 arrow-point-left">
-        <div className="flex items-center gap-2 text-white/80 font-medium text-sm md:text-base">
-          <svg 
-            className="w-5 h-5 md:w-6 md:h-6 animate-bounce-horizontal" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
+            Framer Motion Demo
+          </motion.h1>
+          
+          {/* Mobile Menu Button */}
+          <motion.button
+            className="md:hidden p-2 rounded-lg bg-white/10 backdrop-blur-sm"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            whileTap={{ scale: 0.95 }}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          <span>Start prompting</span>
+            <motion.div
+              animate={{ rotate: isMenuOpen ? 45 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              ☰
+            </motion.div>
+          </motion.button>
         </div>
+      </motion.header>
+
+      <div className="flex flex-col md:flex-row min-h-[calc(100vh-88px)]">
+        {/* Sidebar Navigation */}
+        <AnimatePresence>
+          {(isMenuOpen || window.innerWidth >= 768) && (
+            <motion.nav 
+              className="w-full md:w-64 bg-black/30 backdrop-blur-sm border-r border-white/10 p-6"
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h2 className="text-lg font-semibold mb-6 text-gray-300">Demonstrations</h2>
+              <div className="space-y-2">
+                {demos.map((demo, index) => (
+                  <motion.button
+                    key={demo.id}
+                    className={`w-full text-left p-3 rounded-lg transition-colors ${
+                      activeDemo === demo.id 
+                        ? 'bg-purple-600/50 text-white' 
+                        : 'text-gray-300 hover:bg-white/10'
+                    }`}
+                    onClick={() => {
+                      setActiveDemo(demo.id);
+                      setIsMenuOpen(false);
+                    }}
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    {demo.title}
+                  </motion.button>
+                ))}
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
+
+        {/* Main Content */}
+        <motion.main 
+          className="flex-1 p-6 overflow-auto"
+          key={activeDemo}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="max-w-6xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <ActiveComponent />
+            </motion.div>
+          </div>
+        </motion.main>
       </div>
     </div>
   );
 }
+
